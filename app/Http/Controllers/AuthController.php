@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Request\SignupRequest;
+use App\Http\Request\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
@@ -25,14 +26,11 @@ class AuthController extends Controller
         ], 201);
 
     }
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $validated = $request->validate();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated->email)->first();
 
         if (!$user) {
             return response()->json([
