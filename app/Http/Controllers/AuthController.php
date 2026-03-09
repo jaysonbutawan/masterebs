@@ -3,25 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Request\SignupRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
 
-    public function register(Request $request) {
-    
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+    public function register(SignupRequest $request):JsonResponse|RedirectResponse
+    {
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        $validated = $request->validate();
+
+        $user = User::create($validated);
 
         return response()->json([
             'message' => 'User registered successfully',
