@@ -17,29 +17,28 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function index(): JsonResponse
+    public function index($id = null): JsonResponse
     {
+        if ($id) {
+            $order = $this->orderService->getById($id);
+
+            if (!$order) {
+                return response()->json([
+                    'message' => 'Order not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Order retrieved successfully',
+                'data' => $order,
+            ]);
+        }
+
         $orders = $this->orderService->getAll();
 
         return response()->json([
             'message' => 'Orders retrieved successfully',
             'data' => $orders,
-        ]);
-    }
-
-    public function show(int $id): JsonResponse
-    {
-        $order = $this->orderService->getById($id);
-
-        if (!$order) {
-            return response()->json([
-                'message' => 'Order not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Order retrieved successfully',
-            'data' => $order,
         ]);
     }
 
@@ -87,21 +86,6 @@ class OrderController extends Controller
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $deleted = $this->orderService->deleteOrder($id);
-
-        if (!$deleted) {
-            return response()->json([
-                'message' => 'Order not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Order deleted successfully',
         ]);
     }
 }
