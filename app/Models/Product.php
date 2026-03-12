@@ -14,8 +14,12 @@ class Product extends Model
         'description',
         'price',
         'stock',
+        'status'
     ];
-
+    protected $casts = [
+        'status' => 'boolean'
+    ];
+    
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

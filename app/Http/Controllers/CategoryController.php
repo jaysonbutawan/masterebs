@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\CategoryService;
+
 class CategoryController extends Controller
 {
     protected CategoryService $categoryService;
@@ -15,24 +16,19 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index()
+    public function index($id = null)
     {
+        if ($id) {
+            $category = $this->categoryService->getById($id);
+
+            if (!$category) {
+                return response()->json(['message' => 'Category not found'], 404);
+            }
+            return response()->json($category);
+        }
         return response()->json(
             $this->categoryService->getAll()
         );
-    }
-
-    public function show($id)
-    {
-        $category = $this->categoryService->getById($id);
-
-        if (!$category) {
-            return response()->json([
-                'message' => 'Category not found'
-            ], 404);
-        }
-
-        return response()->json($category);
     }
 
     public function store(StoreCategoryRequest $request)
