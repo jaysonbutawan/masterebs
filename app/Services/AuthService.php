@@ -49,6 +49,11 @@ class AuthService
         ];
     }
 
+     public function logout($user)
+    {
+        $user->currentAccessToken()->delete();
+    }
+
     public function getProfile($id)
     {
         return User::with('role.permissions')->find($id);

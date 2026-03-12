@@ -28,4 +28,18 @@ class UpdateOrderItemsRequest extends FormRequest
             'price' => 'sometimes|numeric|min:0'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'order_id.integer' => 'Order ID must be an integer.',
+            'order_id.exists' => 'Order ID must exist in the orders table.',
+            'product_id.integer' => 'Product ID must be an integer.',
+            'product_id.exists' => 'Product ID must exist in the products table.',
+            'quantity.integer' => 'Quantity must be an integer.',
+            'quantity.min' => 'Quantity must be at least 1.',
+            'price.numeric' => 'Price must be a number.',
+            'price.min' => 'Price must be at least 0.'
+        ];
+    }
 }
