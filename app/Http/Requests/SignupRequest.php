@@ -19,7 +19,7 @@ class SignupRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'string', 'email:rfc', 'max:255'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => ['required', 'string', 'min:6'],
         ];
     }
 
@@ -31,8 +31,7 @@ class SignupRequest extends FormRequest
         return [
             'name.required' => 'Username is required.',
             'email.required' => 'Email is required.',
-            'password.required' => 'Password is required.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'password.required' => 'Password is required.'
         ];
     }
 }

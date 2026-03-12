@@ -8,12 +8,12 @@ class ProductService
 {
     public function getAll()
     {
-        return Product::with('category')->get();
+        return Product::where('status', 1)->with('category')->get();
     }
 
     public function getById(int $id)
     {
-        return Product::with('category')->find($id);
+        return Product::where('status', 1)->with('category')->find($id);
     }
 
     public function create(array $data)
@@ -45,7 +45,7 @@ class ProductService
 
     public function update(int $id, array $data)
     {
-        $product = Product::find($id);
+        $product = Product::where('status', 1)->find($id);
 
         if (!$product) {
             return null;
@@ -89,6 +89,8 @@ class ProductService
             return false;
         }
 
-        return (bool) $product->delete();
+        return  $product->update([
+            'status' => 0
+        ]);
     }
 }

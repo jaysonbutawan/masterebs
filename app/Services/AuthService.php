@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -9,14 +10,21 @@ class AuthService
 {
     public function register(array $data)
     {
-        $data['password'] = Hash::make($data['password']);
+        $customerRole = Role::where('name', 'customer')->firstOrFail();
 
-        return User::create($data);
+        return User::create([
+            'role_id' => $customerRole->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
     }
 
     public function login(array $credentials)
     {
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::with('role.permissions')
+            ->where('email', $credentials['email'])
+            ->first();
 
         if (!$user) {
             return [
@@ -43,6 +51,6 @@ class AuthService
 
     public function getProfile($id)
     {
-        return User::find($id);
+        return User::with('role.permissions')->find($id);
     }
 }

@@ -29,4 +29,10 @@ class UpdateProductRequest extends FormRequest
             'stock' => 'sometimes|integer|min:1',
         ];
     }
+    public function messages()
+    {
+        return [
+            'category_id.exists' => 'The selected category does not exist.',
+        ];
+    }
 }

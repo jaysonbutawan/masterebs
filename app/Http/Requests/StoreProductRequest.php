@@ -22,11 +22,22 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|integer|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:1',
+            'status' => 'nullable|boolean'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'Product name is required.',
+            'price.required' => 'Product price is required.',
+            'stock.required' => 'Product stock is required.',
+            'category_id.exists' => 'The selected category does not exist.',
+            'status.boolean' => 'Product status must be a boolean value.',
         ];
     }
 }
