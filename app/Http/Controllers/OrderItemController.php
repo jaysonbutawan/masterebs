@@ -17,29 +17,25 @@ class OrderItemsController extends Controller
         $this->orderItemsService = $orderItemsService;
     }
 
-    public function index(): JsonResponse
+    public function index($id = null): JsonResponse
     {
+        if ($id) {
+            $orderItem = $this->orderItemsService->getById($id);
+
+            if (!$orderItem) {
+                return response()->json(['message' => 'Order item not found'], 404);
+            }
+
+            return response()->json(['message' => 'Order item retrieved successfully',
+                'data' => $orderItem
+            ]);
+        }
+
         $orderItems = $this->orderItemsService->getAll();
 
         return response()->json([
             'message' => 'Order items retrieved successfully',
             'data' => $orderItems
-        ]);
-    }
-
-    public function show(int $id): JsonResponse
-    {
-        $orderItem = $this->orderItemsService->getById($id);
-
-        if (!$orderItem) {
-            return response()->json([
-                'message' => 'Order item not found'
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Order item retrieved successfully',
-            'data' => $orderItem
         ]);
     }
 

@@ -17,8 +17,23 @@ class RoleController extends Controller
         $this->roleService = $roleService;
     }
 
-    public function index(): JsonResponse
+    public function roles($id = null): JsonResponse
     {
+        if ($id) {
+            $role = $this->roleService->getById($id);
+
+            if (!$role) {
+                return response()->json([
+                    'message' => 'Role not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Role retrieved successfully',
+                'data' => $role,
+            ]);
+        }
+
         $roles = $this->roleService->getAll();
 
         return response()->json([
@@ -26,23 +41,6 @@ class RoleController extends Controller
             'data' => $roles,
         ]);
     }
-
-    public function show(int $id): JsonResponse
-    {
-        $role = $this->roleService->getById($id);
-
-        if (!$role) {
-            return response()->json([
-                'message' => 'Role not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Role retrieved successfully',
-            'data' => $role,
-        ]);
-    }
-
     public function store(StoreRoleRequest $request): JsonResponse
     {
         $role = $this->roleService->create($request->validated());

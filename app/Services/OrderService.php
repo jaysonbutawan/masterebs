@@ -97,18 +97,4 @@ class OrderService
             'data' => $order->load(['user', 'items.product']),
         ];
     }
-
-    public function deleteOrder(int $id): bool
-    {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return false;
-        }
-
-        return DB::transaction(function () use ($order) {
-            $order->items()->delete();
-            return (bool) $order->delete();
-        });
-    }
 }
