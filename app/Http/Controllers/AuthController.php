@@ -2,51 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Request\SignupRequest;
-use App\Http\Request\LoginRequest;
+use App\Services\AuthService;
+use App\Http\Requests\SignupRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\User;
 
 class AuthController extends Controller
 {
+    protected AuthService $authService;
 
-    public function register(SignupRequest $request):JsonResponse|RedirectResponse
+    public function __construct(AuthService $authService)
     {
+        $this->authService = $authService;
+    }
 
-        $validated = $request->validate();
-
-        $user = User::create($validated);
+    public function register(SignupRequest $request): JsonResponse|RedirectResponse
+    {
+        $user = $this->authService->register(
+            $request->validated()
+        );
 
         return response()->json([
             'message' => 'User registered successfully',
             'user' => $user
         ], 201);
-
     }
+
     public function login(LoginRequest $request)
     {
-        $validated = $request->validate();
+        $result = $this->authService->login(
+            $request->validated()
+        );
 
-        $user = User::where('email', $validated->email)->first();
-
-        if (!$user) {
+        if (!$result['status']) {
             return response()->json([
-                'message' => 'User not found'
-            ], 404);
+                'message' => $result['message']
+            ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'Login successful',
-            'token' => $token
+            'token' => $result['token'],
+            'user' => $result['user']
         ]);
     }
 
     public function profile($id)
     {
-        $user = User::find($id);
+        $user = $this->authService->getProfile($id);
 
         if (!$user) {
             return response()->json([

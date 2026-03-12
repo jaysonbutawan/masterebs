@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    public function hasPermission(string $permission): bool
+    {
+        return $this->role &&
+            $this->role->permissions->contains('name', $permission);
+    }
 }

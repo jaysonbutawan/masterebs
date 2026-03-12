@@ -7,11 +7,15 @@ use App\Models\OrderItems;
 
 class Order extends Model
 {
-   protected $fillable = [
+    protected $fillable = [
         'user_id',
         'total_amount',
         'status'
     ];
+    
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_CANCELLED = 'cancelled';
 
     public function user()
     {
@@ -22,5 +26,4 @@ class Order extends Model
     {
         return $this->hasMany(OrderItems::class);
     }
-
 }
