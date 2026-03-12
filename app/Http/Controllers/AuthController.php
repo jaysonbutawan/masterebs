@@ -7,6 +7,7 @@ use App\Http\Requests\SignupRequest;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -45,6 +46,22 @@ class AuthController extends Controller
             'message' => 'Login successful',
             'token' => $result['token'],
             'user' => $result['user']
+        ]);
+    }
+    public function logout(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $this->authService->logout($user);
+
+        return response()->json([
+            'message' => 'Logout successful'
         ]);
     }
 

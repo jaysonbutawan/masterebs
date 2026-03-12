@@ -28,4 +28,21 @@ class StoreOrderItemsRequest extends FormRequest
             'price' => 'required|numeric|min:0'
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'order_id.required' => 'Order ID is required.',
+            'order_id.integer' => 'Order ID must be an integer.',
+            'order_id.exists' => 'Order ID must exist in the orders table.',
+            'product_id.required' => 'Product ID is required.',
+            'product_id.integer' => 'Product ID must be an integer.',
+            'product_id.exists' => 'Product ID must exist in the products table.',
+            'quantity.required' => 'Quantity is required.',
+            'quantity.integer' => 'Quantity must be an integer.',
+            'quantity.min' => 'Quantity must be at least 1.',
+            'price.required' => 'Price is required.',
+            'price.numeric' => 'Price must be a number.',
+            'price.min' => 'Price must be at least 0.'
+        ];
+    }
 }

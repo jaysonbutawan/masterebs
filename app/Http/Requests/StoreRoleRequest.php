@@ -27,4 +27,17 @@ class StoreRoleRequest extends FormRequest
             'permissions.*' => 'integer|exists:permissions,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Role name is required.',
+            'name.string' => 'Role name must be a string.',
+            'name.max' => 'Role name must not exceed 255 characters.',
+            'name.unique' => 'Role name must be unique.',
+            'permissions.array' => 'Permissions must be an array.',
+            'permissions.*.integer' => 'Each permission ID must be an integer.',
+            'permissions.*.exists' => 'Each permission ID must exist in the permissions table.',
+        ];
+    }
 }

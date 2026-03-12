@@ -37,4 +37,16 @@ class UpdateOrderRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'user_id.integer' => 'User ID must be an integer.',
+            'user_id.exists' => 'User ID must exist in the users table.',
+            'total_amount.numeric' => 'Total amount must be a number.',
+            'total_amount.min' => 'Total amount must be at least 0.',
+            'status.string' => 'Status must be a string.',
+            'status.in' => 'Status must be one of: pending, completed, cancelled.',
+        ];
+    }
 }
