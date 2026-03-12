@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255); // name with 255 length
-            $table->timestamp('created_at')->useCurrent(); // only created_at timestamp
+            $table->string('name', 255); 
+            $table->timestamp('created_at')->useCurrent(); 
         });
     }
 
