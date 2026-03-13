@@ -24,19 +24,8 @@ Route::middleware('api.auth')->group(function () {
         Route::get('/{id}', [AuthController::class, 'profile'])->name('profile');
     });
 
-    Route::name('catalog.')->group(function () {
-        Route::apiResource('categories', CategoryController::class);
-        Route::apiResource('products', ProductController::class);
-    });
 
-    Route::name('sales.')->group(function () {
-        Route::apiResource('orders', OrderController::class);
-        Route::apiResource('order-items', OrderItemController::class);
-    });
 
-    Route::name('access.')->group(function () {
-        Route::apiResource('roles', RoleController::class);
-    });
 Route::prefix('POS')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login'])->name('user-login');
