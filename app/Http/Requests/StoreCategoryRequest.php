@@ -16,11 +16,11 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string|max:500',
-            'status' => 'nullable|boolean'
+            'status' => 'nullable|boolean',
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'name.unique' => 'This category already exists.',

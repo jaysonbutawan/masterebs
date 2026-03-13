@@ -2,78 +2,94 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\CategoryService;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    protected CategoryService $categoryService;
+    public function __construct(protected CategoryService $categoryService) {}
 
-    public function __construct(CategoryService $categoryService)
-    {
-        $this->categoryService = $categoryService;
-    }
-
-    public function index($id = null)
+    public function index(?int $id = null): JsonResponse
     {
         if ($id) {
             $category = $this->categoryService->getById($id);
 
-            if (!$category) {
+            if (! $category) {
                 return response()->json(['message' => 'Category not found'], 404);
             }
+
             return response()->json($category);
         }
+
         return response()->json(
             $this->categoryService->getAll()
         );
     }
 
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $category = $this->categoryService->create(
-            $request->validated()
-        );
+        $data = $request->validated();
+
+        if ($this->categoryService->existsByName($data['name'])) {
+            return response()->json([
+                'message' => 'This category already exists.',
+            ], 422);
+        }
+
+        try {
+            $category = $this->categoryService->create($data);
+        } catch (QueryException $exception) {
+            $errorCode = $exception->errorInfo[1] ?? null;
+
+            if ($errorCode === 1062) {
+                return response()->json([
+                    'message' => 'This category already exists.',
+                ], 422);
+            }
+
+            throw $exception;
+        }
 
         return response()->json([
             'message' => 'Category created successfully',
-            'data' => $category
+            'data' => $category,
         ], 201);
     }
 
-    public function update(UpdateCategoryRequest $request, $id)
+    public function update(UpdateCategoryRequest $request, int $id): JsonResponse
     {
         $category = $this->categoryService->update(
             $id,
             $request->validated()
         );
 
-        if (!$category) {
+        if (! $category) {
             return response()->json([
-                'message' => 'Category not found'
+                'message' => 'Category not found',
             ], 404);
         }
 
         return response()->json([
             'message' => 'Category updated successfully',
-            'data' => $category
+            'data' => $category,
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $deleted = $this->categoryService->delete($id);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
-                'message' => 'Category not found'
+                'message' => 'Category not found',
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Category deleted successfully'
+            'message' => 'Category deleted successfully',
         ]);
     }
 }
