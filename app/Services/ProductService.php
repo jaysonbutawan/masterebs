@@ -8,12 +8,12 @@ class ProductService
 {
     public function getAll()
     {
-        return Product::with('category')->get();
+        return Product::where('status', 1)->with('category')->get();
     }
 
     public function getById(int $id)
     {
-        return Product::with('category')->find($id);
+        return Product::where('status', 1)->with('category')->find($id);
     }
 
     public function create(array $data)
@@ -45,7 +45,7 @@ class ProductService
 
     public function update(int $id, array $data)
     {
-        $product = Product::find($id);
+        $product = Product::where('status', 1)->find($id);
 
         if (!$product) {
             return null;
@@ -80,6 +80,23 @@ class ProductService
             'product' => $product->fresh('category'),
         ];
     }
+    public function updateDetails(int $id, array $data)
+    {
+        $product = Product::where('status', 1)->find($id);
+
+        if (!$product) {
+            return null;
+        }
+
+        $product->update([
+            'name' => $data['name'] ?? $product->name,
+            'description' => $data['description'] ?? $product->description,
+            'price' => $data['price'] ?? $product->price,
+            'stock' => $data['stock'] ?? $product->stock,
+        ]);
+
+        return $product->fresh('category');
+    }
 
     public function delete(int $id): bool
     {
@@ -89,6 +106,8 @@ class ProductService
             return false;
         }
 
-        return (bool) $product->delete();
+        return  $product->update([
+            'status' => 0
+        ]);
     }
 }

@@ -19,4 +19,12 @@ class StoreCategoryRequest extends FormRequest
             'status' => 'nullable|boolean'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.unique' => 'This category already exists.',
+            'name.required' => 'Category name is required.',
+        ];
+    }
 }

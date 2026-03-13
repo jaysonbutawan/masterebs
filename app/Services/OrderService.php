@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Order;
-use App\Models\OrderItems;
 use Illuminate\Support\Facades\DB;
+use App\Models\Product;
 
 class OrderService
 {
@@ -18,33 +18,39 @@ class OrderService
         return Order::with(['user', 'items.product'])->find($id);
     }
 
-    public function createOrder(int $userId, array $items)
-    {
-        return DB::transaction(function () use ($userId, $items) {
-            $totalAmount = 0;
+public function createOrder(int $userId, array $items)
+{
+    return DB::transaction(function () use ($userId, $items) {
 
-            foreach ($items as $item) {
-                $totalAmount += $item['price'] * $item['quantity'];
-            }
+        $totalAmount = 0;
+        $orderItems = [];
 
-            $order = Order::create([
-                'user_id' => $userId,
-                'total_amount' => $totalAmount,
-                'status' => Order::STATUS_PENDING,
-            ]);
+        foreach ($items as $item) {
+            $product = Product::findOrFail($item['product_id']); 
+            $price = $product->price;
 
-            foreach ($items as $item) {
-                OrderItems::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                ]);
-            }
+            $totalAmount += $price * $item['quantity'];
 
-            return $order->load(['user', 'items.product']);
-        });
-    }
+            $orderItems[] = [
+                'product_id' => $product->id,
+                'quantity' => $item['quantity'],
+                'price' => $price,
+            ];
+        }
+
+        $order = Order::create([
+            'user_id' => $userId,
+            'total_amount' => $totalAmount,
+            'status' => Order::STATUS_PENDING,
+        ]);
+
+        foreach ($orderItems as $orderItem) {
+            $order->items()->create($orderItem);
+        }
+
+        return $order->load(['user', 'items.product']);
+    });
+}
 
     public function updateOrder(int $id, array $data)
     {
@@ -96,19 +102,5 @@ class OrderService
             'message' => 'Order cancelled successfully',
             'data' => $order->load(['user', 'items.product']),
         ];
-    }
-
-    public function deleteOrder(int $id): bool
-    {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return false;
-        }
-
-        return DB::transaction(function () use ($order) {
-            $order->items()->delete();
-            return (bool) $order->delete();
-        });
     }
 }

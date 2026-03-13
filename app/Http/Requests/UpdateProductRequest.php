@@ -11,7 +11,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,6 +27,24 @@ class UpdateProductRequest extends FormRequest
             'description' => 'nullable|string|max:500',
             'price' => 'sometimes|numeric|min:0',
             'stock' => 'sometimes|integer|min:1',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'category_id.integer' => 'Category ID must be an integer.',
+            'category_id.exists' => 'Category ID must exist in the categories table.',
+            'name.string' => 'Name must be a string.',
+            'name.max' => 'Name must not exceed 255 characters.',
+            'description.string' => 'Description must be a string.',
+            'description.max' => 'Description must not exceed 500 characters.',
+            'price.numeric' => 'Price must be a number.',
+            'price.min' => 'Price must be at least 0.',
+            'stock.integer' => 'Stock must be an integer.',
+            'stock.min' => 'Stock must be at least 1.',
+            'product_id.integer' => 'Product ID must be an integer.',
+            'product_id.exists' => 'Product ID must exist in the products table.',
         ];
     }
 }

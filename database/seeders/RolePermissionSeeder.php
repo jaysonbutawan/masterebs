@@ -11,7 +11,7 @@ class RolePermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-     public function run(): void
+    public function run(): void
     {
         $rolePermissions = [
 
@@ -31,6 +31,11 @@ class RolePermissionSeeder extends Seeder
                 'order.update',
                 'order.cancel',
 
+                'order-item.read',
+                'order-item.create',
+                'order-item.update',
+                'order-item.delete',
+
                 'user.read',
                 'user.create',
                 'user.update',
@@ -42,6 +47,9 @@ class RolePermissionSeeder extends Seeder
                 'category.read',
                 'order.read',
                 'order.update',
+                'order-item.read',
+                'order-item.update',
+                'order.cancel',
             ],
 
             'customer' => [
@@ -49,6 +57,10 @@ class RolePermissionSeeder extends Seeder
                 'category.read',
                 'order.read',
                 'order.create',
+                'order.cancel',
+                'order-item.update',
+                'order-item.read',
+
             ],
         ];
 

@@ -17,8 +17,23 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function index(): JsonResponse
+    public function index($id = null): JsonResponse
     {
+        if ($id) {
+            $order = $this->orderService->getById($id);
+
+            if (!$order) {
+                return response()->json([
+                    'message' => 'Order not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Order retrieved successfully',
+                'data' => $order,
+            ]);
+        }
+
         $orders = $this->orderService->getAll();
 
         return response()->json([
@@ -27,34 +42,16 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show(int $id): JsonResponse
+  public function store(StoreOrderRequest $request): JsonResponse
     {
-        $order = $this->orderService->getById($id);
-
-        if (!$order) {
-            return response()->json([
-                'message' => 'Order not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Order retrieved successfully',
-            'data' => $order,
-        ]);
-    }
-
-    public function store(StoreOrderRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-
         $order = $this->orderService->createOrder(
-            $validated['user_id'],
-            $validated['items']
+            $request->input('user_id'),
+            $request->input('items')
         );
 
         return response()->json([
             'message' => 'Order created successfully',
-            'data' => $order,
+            'data' => $order
         ], 201);
     }
 
@@ -87,21 +84,6 @@ class OrderController extends Controller
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
-        ]);
-    }
-
-    public function destroy(int $id): JsonResponse
-    {
-        $deleted = $this->orderService->deleteOrder($id);
-
-        if (!$deleted) {
-            return response()->json([
-                'message' => 'Order not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Order deleted successfully',
         ]);
     }
 }

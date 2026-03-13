@@ -16,27 +16,26 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index(): JsonResponse
+    public function index($id = null): JsonResponse
     {
-        return response()->json([
-            'message' => 'Products retrieved successfully',
-            'data' => $this->productService->getAll(),
-        ]);
-    }
+        if ($id) {
+            $item = $this->productService->getById($id);
 
-    public function show(int $id): JsonResponse
-    {
-        $product = $this->productService->getById($id);
+            if (!$item) {
+                return response()->json([
+                    'message' => 'Product not found',
+                ], 404);
+            }
 
-        if (!$product) {
             return response()->json([
-                'message' => 'Product not found',
-            ], 404);
+                'message' => 'Product retrieved successfully',
+                'data' => $item,
+            ]);
         }
 
         return response()->json([
-            'message' => 'Product retrieved successfully',
-            'data' => $product,
+            'message' => 'Products retrieved successfully',
+            'data' => $this->productService->getAll(),
         ]);
     }
 
@@ -67,6 +66,21 @@ class ProductController extends Controller
                 ? 'Product merged successfully with existing product.'
                 : 'Product updated successfully',
             'data' => $result['product'],
+        ]);
+    }
+    public function updateDetails(UpdateProductRequest $request, int $id)
+    {
+        $product = $this->productService->updateDetails($id, $request->validated());
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Product details updated successfully',
+            'data' => $product
         ]);
     }
 
