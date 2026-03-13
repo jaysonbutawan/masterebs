@@ -14,13 +14,13 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|categories,name',
             'description' => 'nullable|string|max:500',
-            'status' => 'nullable|boolean',
+            'status' => 'nullable|boolean'
         ];
     }
 
-    public function messages(): array
+    public function messages()
     {
         return [
             'name.unique' => 'This category already exists.',
