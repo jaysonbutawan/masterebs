@@ -42,18 +42,16 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(StoreOrderRequest $request): JsonResponse
+  public function store(StoreOrderRequest $request): JsonResponse
     {
-        $validated = $request->validated();
-
         $order = $this->orderService->createOrder(
-            $validated['user_id'],
-            $validated['items']
+            $request->input('user_id'),
+            $request->input('items')
         );
 
         return response()->json([
             'message' => 'Order created successfully',
-            'data' => $order,
+            'data' => $order
         ], 201);
     }
 
