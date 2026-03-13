@@ -26,7 +26,7 @@ Route::prefix('POS')->group(function () {
         Route::prefix('products')->name('products.')->group(function () {
             Route::get('/{id?}', [ProductController::class, 'index'])->middleware('permission:product.read')->name('index-optional');
             Route::post('/', [ProductController::class, 'store'])->middleware('permission:product.create')->name('store');
-            Route::put('/{id}', [ProductController::class, 'update'])->middleware('permission:product.update')->name('update');
+            Route::put('/{id}', [ProductController::class, 'updateDetails'])->middleware('permission:product.update')->name('updateDetails');
             Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware('permission:product.delete')->name('destroy');
         });
 
