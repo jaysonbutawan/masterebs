@@ -48,7 +48,7 @@ Route::prefix('POS')->group(function () {
             Route::get('/{id?}', [RoleController::class, 'roles'])->middleware('permission:role.read')->name('index-optional');
             Route::post('/', [RoleController::class, 'store'])->middleware('permission:role.create')->name('store');
             Route::put('/{id}', [RoleController::class, 'update'])->middleware('permission:role.update')->name('update');
-            Route::delete('/{id}', [RoleController::class, 'destroy'])->middleware('permission:role.delete')->name('destroy');
+            Route::match(['delete','post'], '/{id}', [RoleController::class, 'destroy'])->middleware('permission:role.delete')->name('destroy');
         });
 
         Route::post('/logout', [AuthController::class, 'logout'])->name('user-logout');
