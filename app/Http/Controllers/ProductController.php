@@ -68,6 +68,21 @@ class ProductController extends Controller
             'data' => $result['product'],
         ]);
     }
+    public function updateDetails(UpdateProductRequest $request, int $id)
+    {
+        $product = $this->productService->updateDetails($id, $request->validated());
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Product details updated successfully',
+            'data' => $product
+        ]);
+    }
 
     public function destroy(int $id): JsonResponse
     {

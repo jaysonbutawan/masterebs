@@ -11,7 +11,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -42,7 +42,9 @@ class UpdateProductRequest extends FormRequest
             'price.numeric' => 'Price must be a number.',
             'price.min' => 'Price must be at least 0.',
             'stock.integer' => 'Stock must be an integer.',
-            'stock.min' => 'Stock must be at least 1.'
+            'stock.min' => 'Stock must be at least 1.',
+            'product_id.integer' => 'Product ID must be an integer.',
+            'product_id.exists' => 'Product ID must exist in the products table.',
         ];
     }
 }

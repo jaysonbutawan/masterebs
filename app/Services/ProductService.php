@@ -80,6 +80,23 @@ class ProductService
             'product' => $product->fresh('category'),
         ];
     }
+    public function updateDetails(int $id, array $data)
+    {
+        $product = Product::where('status', 1)->find($id);
+
+        if (!$product) {
+            return null;
+        }
+
+        $product->update([
+            'name' => $data['name'] ?? $product->name,
+            'description' => $data['description'] ?? $product->description,
+            'price' => $data['price'] ?? $product->price,
+            'stock' => $data['stock'] ?? $product->stock,
+        ]);
+
+        return $product->fresh('category');
+    }
 
     public function delete(int $id): bool
     {
