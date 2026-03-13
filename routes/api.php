@@ -33,8 +33,8 @@ Route::prefix('POS')->group(function () {
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/{id?}', [OrderController::class, 'index'])->middleware('permission:order.read')->name('index-optional');
             Route::post('/', [OrderController::class, 'store'])->middleware('permission:order.create')->name('store');
-            Route::put('/{id}', [OrderController::class, 'update'])->middleware('permission:order.update')->name('update');
-            Route::post('cancel/{id}', [OrderController::class, 'cancel'])->middleware('permission:order.cancel')->name('cancel');
+            Route::match(['put', 'patch'], '/{id}', [OrderController::class, 'update'])->middleware('permission:order.update')->name('update');
+            Route::match(['get', 'post'], 'cancel/{id}', [OrderController::class, 'cancel'])->middleware('permission:order.cancel')->name('cancel');
         });
 
         Route::prefix('order-items')->name('order-items.')->group(function () {

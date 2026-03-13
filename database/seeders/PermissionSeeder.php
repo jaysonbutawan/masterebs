@@ -17,6 +17,8 @@ class PermissionSeeder extends Seeder
             'category' => ['read', 'create', 'update', 'delete'],
             'order' => ['read', 'create', 'update', 'cancel'],
             'user' => ['read', 'create', 'update', 'delete'],
+            'order-item' => ['read', 'create', 'update', 'delete'],
+            'role' => ['read', 'create', 'update', 'delete'],
         ];
 
         foreach ($modules as $module => $actions) {

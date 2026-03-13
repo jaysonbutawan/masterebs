@@ -58,8 +58,9 @@ class RolePermissionSeeder extends Seeder
                 'order.read',
                 'order.create',
                 'order.cancel',
+                'order-item.update',
                 'order-item.read',
-                
+
             ],
         ];
 
